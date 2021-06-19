@@ -84,14 +84,22 @@ class StartPage extends StatelessWidget {
       alignment: Alignment.center,
       children: [
         Align(
-          alignment: Alignment.center,
-          child: Image.asset("assets/images/redButtonBGImage.png",
-              height: screenHeight * 0.25, width: screenHeight * 0.25),
-        ),
-        Align(
+          alignment: Alignment.bottomCenter,
+          child: Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.grey.withOpacity(0.9),
+                    spreadRadius: 5,
+                    blurRadius: 7,
+                    offset: Offset(0, 3))
+              ],
+            ),
             child: Image.asset("assets/images/redButtonImage.png",
                 height: screenHeight * 0.22, width: screenHeight * 0.22),
-            alignment: Alignment.bottomCenter),
+          ),
+        ),
         Text(
           'help',
           style: TextStyle(
