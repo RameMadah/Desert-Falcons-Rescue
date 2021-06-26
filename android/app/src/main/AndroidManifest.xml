@@ -1,5 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<<<<<<< HEAD
     package="com.hamza.desert_falcon_rescue">
+=======
+    package="com.developer.desert_falcon_rescue">
+>>>>>>> dc25c162fbe101ac517934fae4625684d1fdb761
    <application
         android:label="desert_falcon_rescue"
         android:icon="@mipmap/ic_launcher">

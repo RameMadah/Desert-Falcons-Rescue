@@ -77,6 +77,10 @@ class _InputWidgetState extends State<TextInputWidget> {
           enabled: widget.isEnabled,
           textInputAction: widget.textInputAction,
           style: TextStyle(fontSize: 14),
+<<<<<<< HEAD
+=======
+          cursorColor: Colors.red,
+>>>>>>> dc25c162fbe101ac517934fae4625684d1fdb761
           decoration: InputDecoration(
             fillColor: widget.isEnabled == true ? Colors.white : Colors.white,
             filled: true,
@@ -104,7 +108,11 @@ class _InputWidgetState extends State<TextInputWidget> {
                 borderSide: BorderSide(color: Colors.grey)),
             focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
+<<<<<<< HEAD
                 borderSide: BorderSide(color: Colors.blue)),
+=======
+                borderSide: BorderSide(color: Colors.red)),
+>>>>>>> dc25c162fbe101ac517934fae4625684d1fdb761
           ),
           validator: (value) => value == null || value.isEmpty
               ? widget.validationText ?? "Enter Text"
