@@ -115,9 +115,8 @@ class StartPage extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        border: Border.all(color: AppColors.borderColor, width: 3),
-        borderRadius: BorderRadius.all(Radius.circular(8)),
-      ),
+          border: Border.all(color: AppColors.borderColor, width: 3),
+          borderRadius: BorderRadius.all(Radius.circular(8))),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
         child: Row(
