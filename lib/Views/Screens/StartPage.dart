@@ -84,16 +84,6 @@ class StartPage extends StatelessWidget {
       alignment: Alignment.center,
       children: [
         Align(
-<<<<<<< HEAD
-          alignment: Alignment.center,
-          child: Image.asset("assets/images/redButtonBGImage.png",
-              height: screenHeight * 0.25, width: screenHeight * 0.25),
-        ),
-        Align(
-            child: Image.asset("assets/images/redButtonImage.png",
-                height: screenHeight * 0.22, width: screenHeight * 0.22),
-            alignment: Alignment.bottomCenter),
-=======
           alignment: Alignment.bottomCenter,
           child: Container(
             decoration: BoxDecoration(
@@ -110,7 +100,6 @@ class StartPage extends StatelessWidget {
                 height: screenHeight * 0.22, width: screenHeight * 0.22),
           ),
         ),
->>>>>>> dc25c162fbe101ac517934fae4625684d1fdb761
         Text(
           'help',
           style: TextStyle(
@@ -126,14 +115,8 @@ class StartPage extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-<<<<<<< HEAD
-        border: Border.all(color: AppColors.borderColor, width: 3),
-        borderRadius: BorderRadius.all(Radius.circular(8)),
-      ),
-=======
           border: Border.all(color: AppColors.borderColor, width: 3),
           borderRadius: BorderRadius.all(Radius.circular(8))),
->>>>>>> dc25c162fbe101ac517934fae4625684d1fdb761
       child: Padding(
         padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
         child: Row(
