@@ -1,5 +1,6 @@
 import 'package:desert_falcon_rescue/Controllers/LoginController.dart';
 import 'package:desert_falcon_rescue/Globals/Colors.dart';
+import 'package:desert_falcon_rescue/Views/Screens/ApplicationScreen.dart';
 import 'package:desert_falcon_rescue/Views/Screens/RescuerRegisterationPage.dart';
 import 'package:desert_falcon_rescue/Views/Utils/AppRoutes.dart';
 import 'package:desert_falcon_rescue/Views/Widgets/AppBar.dart';
@@ -117,14 +118,15 @@ class _LoginPageState extends State<LoginPage> {
             LoginStatus.InProgress
         ? CircularProgressIndicatorWidget()
         : CustomButton('login'.tr(), () {
-            if (_formKey.currentState == null) {
-              return;
-            }
-            FormState currentState = _formKey.currentState!;
-            if (currentState.validate()) {
-              currentState.save();
-              _login();
-            }
+            AppRoutes.push(context, ApplicationScreen());
+            // if (_formKey.currentState == null) {
+            //   return;
+            // }
+            // FormState currentState = _formKey.currentState!;
+            // if (currentState.validate()) {
+            //   currentState.save();
+            //   _login();
+            // }
           });
   }
 

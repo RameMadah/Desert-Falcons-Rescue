@@ -29,5 +29,8 @@
     "drivers-license": "- Driver License (both sides)",
     "vehicle-photos": "- Vehicle Photos",
     "terms-and-Conditions": "Terms & Conditions",
-    "submit-req": "Submit Request"
+    "submit-req": "Submit Request",
+    "send-req": "Send Request",
+    "select-your-location": "Select your location",
+    "confirm-location": "Confirm Location"
 }
