@@ -1,9 +1,9 @@
+import 'dart:convert';
 import 'dart:developer';
 
-import 'package:desert_falcon_rescue/APIManager/APIManager.dart';
 import 'package:desert_falcon_rescue/APIManager/LoginAPIManager.dart';
-import 'package:desert_falcon_rescue/Controllers/BaseController.dart';
 import 'package:desert_falcon_rescue/Managers/UserSessionManager.dart';
+import 'package:desert_falcon_rescue/Models/AppErrors.dart';
 import 'package:desert_falcon_rescue/Models/AppUser.dart';
 import 'package:desert_falcon_rescue/Views/Utils/HelperFunctions.dart';
 import 'package:dio/dio.dart';
@@ -14,7 +14,7 @@ import 'package:easy_localization/easy_localization.dart';
 
 enum LoginStatus { Uninitialized, InProgress, Success, Error }
 
-class LoginController extends ChangeNotifier with BaseController {
+class LoginController extends ChangeNotifier {
   // Self Instace
   static final _selfInstance = LoginController._internal();
 
@@ -36,8 +36,10 @@ class LoginController extends ChangeNotifier with BaseController {
         await APIManager().login(username, password);
     if (response.item1 == APIResult.Failiure) {
       DioError error = response.item2 as DioError;
-      log('Login Error $error');
-      Helper.showSnackbar(parseDioError(error) ?? 'some-error-occured'.tr());
+      AppError appError =
+          AppError.fromJson(jsonDecode(error.response.toString()));
+      Helper.showSnackbar(appError.message?[0].messages?[0].message ??
+          'some-error-occured'.tr());
       _loginStatus = LoginStatus.Error;
     } else {
       AppUser user = AppUser.fromJson(response.item2);

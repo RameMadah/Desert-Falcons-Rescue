@@ -1,10 +1,10 @@
-import 'dart:developer';
-
+export 'package:desert_falcon_rescue/APIManager/APIManager.dart';
 import 'package:desert_falcon_rescue/APIManager/APIManager.dart';
 import 'package:desert_falcon_rescue/Globals/Endpoints.dart';
 import 'package:tuple/tuple.dart';
 
 extension LoginAPIManager on APIManager {
+  
   Future<Tuple2<APIResult, dynamic>> login(
       String username, String password) async {
     Map<String, dynamic> loginData = {
