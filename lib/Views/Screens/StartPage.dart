@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'ApplicationScreen.dart';
+
 class StartPage extends StatelessWidget {
   late double screenHeight;
   late double screenWidth;
@@ -44,7 +46,7 @@ class StartPage extends StatelessWidget {
                 fontSize: 50.sp),
           ).tr(),
         ),
-        _redButton(),
+        _redButton(context),
         _rescuersOnlineWidget(),
         Container(
           width: double.infinity,
@@ -79,35 +81,40 @@ class StartPage extends StatelessWidget {
     );
   }
 
-  _redButton() {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                    color: Colors.grey.withOpacity(0.9),
-                    spreadRadius: 5,
-                    blurRadius: 7,
-                    offset: Offset(0, 3))
-              ],
+  _redButton(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        AppRoutes.push(context, ApplicationScreen());
+      },
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.grey.withOpacity(0.9),
+                      spreadRadius: 5,
+                      blurRadius: 7,
+                      offset: Offset(0, 3))
+                ],
+              ),
+              child: Image.asset("assets/images/redButtonImage.png",
+                  height: screenHeight * 0.22, width: screenHeight * 0.22),
             ),
-            child: Image.asset("assets/images/redButtonImage.png",
-                height: screenHeight * 0.22, width: screenHeight * 0.22),
           ),
-        ),
-        Text(
-          'help',
-          style: TextStyle(
-              fontSize: 111.sp,
-              color: AppColors.whiteColor,
-              fontWeight: FontWeight.bold),
-        ).tr(),
-      ],
+          Text(
+            'help',
+            style: TextStyle(
+                fontSize: 111.sp,
+                color: AppColors.whiteColor,
+                fontWeight: FontWeight.bold),
+          ).tr(),
+        ],
+      ),
     );
   }
 

@@ -34,13 +34,14 @@ class APIManager {
     return result;
   }
 
-  postAttachment(String url, List<File> images, String userID) async {
+  postAttachment(String url, List<File> images, String userID,
+      {String field = "Attachments"}) async {
     Tuple2<APIResult, dynamic> result;
     try {
       FormData formData = FormData.fromMap({
         "refId": userID,
         "ref": "user",
-        "field": "Attachments",
+        "field": field,
         "source": "users-permissions"
       });
       for (File image in images) {

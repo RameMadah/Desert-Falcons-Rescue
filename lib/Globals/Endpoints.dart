@@ -6,4 +6,6 @@ class EndPoints {
   static String get rescuerRegister => login + "/register";
 
   static String get uploadAttachments => baseURL + "upload/";
+
+  static String get helpRequest => baseURL + "help-requests";
 }

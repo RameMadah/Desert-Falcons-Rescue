@@ -41,5 +41,19 @@
     "please-enter-name": "Please enter name",
     "email": "Email",
     "please-enter-email": "Please enter email",
-    "please-upload-required-docs": "Please upload required documents"
+    "please-upload-required-docs": "Please upload required documents",
+    "area-name": "Area Name",
+    "please-enter-area": "Please enter area Name",
+    "vehicle-maker": "Vehicle Maker",
+    "please-enter-vehicle-maker": "Please enter Vehicle Maker",
+    "description-explain-your-situation": "Description (Explain your situation)",
+    "please-explain-situation": "Please Explain your situation",
+    "Upload-clear-photos-or-Videos-of-vehicle": "Upload Clear Photos\nof vehicle",
+    "Record-from-Camera": "Capture from Camera",
+    "Photo-Library": "Photo Library",
+    "Camera": "Camera",
+    "Video": "Video",
+    "Image": "Image",
+    "Dont-panic-text": "Don't panic, be patient , just wait for a while Rescuer will contact you shortly",
+    "please-upload-images": "Please uplaod images"
 }

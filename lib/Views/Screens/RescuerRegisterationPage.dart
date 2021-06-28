@@ -407,14 +407,10 @@ class _RescuerRegisterationState extends State<RescuerRegisteration> {
   }
 
   void _registerButtonPressed() {
-    if (_formKey.currentState == null) {
-      return;
-    }
+    if (_formKey.currentState == null) return;
     FormState currentState = _formKey.currentState!;
+    if (!currentState.validate()) return;
     currentState.save();
-    if (!currentState.validate()) {
-      return;
-    }
     if (_password != _retypePassword) {
       Helper.showSnackbar("password-not-match-to-confirm".tr());
       return;
@@ -453,14 +449,14 @@ class _RescuerRegisterationState extends State<RescuerRegisteration> {
                 children: <Widget>[
                   new ListTile(
                       leading: new Icon(Icons.photo_library),
-                      title: new Text('Photo Library'),
+                      title: new Text('Photo-Library'.tr()),
                       onTap: () {
                         _imgFromGallery();
                         Navigator.of(context).pop();
                       }),
                   new ListTile(
                     leading: new Icon(Icons.photo_camera),
-                    title: new Text('Camera'),
+                    title: new Text('Camera'.tr()),
                     onTap: () {
                       _imgFromCamera();
                       Navigator.of(context).pop();

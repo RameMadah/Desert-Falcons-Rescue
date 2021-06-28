@@ -118,15 +118,14 @@ class _LoginPageState extends State<LoginPage> {
             LoginStatus.InProgress
         ? CircularProgressIndicatorWidget()
         : CustomButton('login'.tr(), () {
-            AppRoutes.push(context, ApplicationScreen());
-            // if (_formKey.currentState == null) {
-            //   return;
-            // }
-            // FormState currentState = _formKey.currentState!;
-            // if (currentState.validate()) {
-            //   currentState.save();
-            //   _login();
-            // }
+            if (_formKey.currentState == null) {
+              return;
+            }
+            FormState currentState = _formKey.currentState!;
+            if (currentState.validate()) {
+              currentState.save();
+              _login();
+            }
           });
   }
 

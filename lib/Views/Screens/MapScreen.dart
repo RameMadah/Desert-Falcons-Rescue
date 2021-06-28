@@ -53,7 +53,7 @@ class _MapScreenState extends State<MapScreen> {
             target: widget._initialLatLng == null
                 ? LatLng(0, 0)
                 : widget._initialLatLng!,
-            zoom: 1000,
+            zoom: 20,
           ),
           zoomControlsEnabled: false,
           mapToolbarEnabled: false,
