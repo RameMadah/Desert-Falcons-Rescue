@@ -1,6 +1,9 @@
 import 'dart:io';
 
+import 'package:desert_falcon_rescue/Controllers/RescuerRegisterationController.dart';
 import 'package:desert_falcon_rescue/Globals/Colors.dart';
+import 'package:desert_falcon_rescue/Models/RescuerRegisterationModel.dart';
+import 'package:desert_falcon_rescue/Views/Utils/HelperFunctions.dart';
 import 'package:desert_falcon_rescue/Views/Widgets/AppBar.dart';
 import 'package:desert_falcon_rescue/Views/Widgets/Button.dart';
 import 'package:desert_falcon_rescue/Views/Widgets/TextInputWidget.dart';
@@ -10,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 
 class RescuerRegisteration extends StatefulWidget {
   @override
@@ -20,11 +24,20 @@ class _RescuerRegisterationState extends State<RescuerRegisteration> {
   late double _screenHeight;
   late double _screenWidth;
   PickedFile? _profileImageFile;
-  late String username;
-  late String password;
-  late String retypePassword;
+  late String _name;
+  late String _email;
+  late String _username;
+  late String _password;
+  late String _retypePassword;
+  late String _carModel;
+  late String _phone;
+  late String _city;
+  late String _experience;
+  late String _description;
   List<File> _documentList = [];
   bool _isTermsAndConditionsSelected = false;
+  late RescuerRegisterationModel _rescuerRegisterationModel;
+  final GlobalKey<FormState> _formKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
     _screenHeight = MediaQuery.of(context).size.height;
@@ -32,29 +45,47 @@ class _RescuerRegisterationState extends State<RescuerRegisteration> {
 
     return Scaffold(
       appBar: CustomAppBar(context, "rescuer-registration".tr()),
-      body: SafeArea(child: _form()),
+      body: SafeArea(
+          child: ChangeNotifierProvider.value(
+        value: RescuerRegisterationController(),
+        child: Consumer<RescuerRegisterationController>(
+            builder: (context, controller, child) {
+          switch (controller.registerationStatus) {
+            case RescuerRegisterationStatus.Uninitialized:
+            case RescuerRegisterationStatus.InProgress:
+            case RescuerRegisterationStatus.Success:
+            case RescuerRegisterationStatus.Error:
+              return _form(context);
+          }
+        }),
+      )),
     );
   }
 
-  Widget _form() {
+  Widget _form(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Form(
-        child: ListView(
-          children: [
-            _profileImage(),
-            _userNameTextField(),
-            _passwordTextField(),
-            _retypePasswordTextField(),
-            _carModelAndMake(),
-            _phone(),
-            _city(),
-            _rateYourSelf(),
-            _descriptionField(),
-            _documentsLabelContainer(),
-            _documentImages(),
-            _termsAndConditions(),
-          ],
+        key: _formKey,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              _nameTextField(),
+              _emailTextField(),
+              _userNameTextField(),
+              _passwordTextField(),
+              _retypePasswordTextField(),
+              _carModelAndMake(),
+              _phoneTextField(),
+              _cityTextField(),
+              _rateYourSelf(),
+              _descriptionField(),
+              _documentsLabelContainer(),
+              _documentImages(),
+              _termsAndConditions(),
+              _submitButton(context),
+            ],
+          ),
         ),
       ),
     );
@@ -79,6 +110,42 @@ class _RescuerRegisterationState extends State<RescuerRegisteration> {
               ));
   }
 
+  Widget _nameTextField() {
+    return TextInputWidget(
+        prefix: Icon(
+          Icons.person,
+          color: AppColors.darkGrayColor,
+        ),
+        labelText: '',
+        hintText: 'name'.tr(),
+        keyBoardType: TextInputType.text,
+        obscureText: false,
+        controller: null,
+        onSaved: (value) {
+          _name = value;
+        },
+        validationText: "please-enter-name".tr(),
+        textInputAction: null);
+  }
+
+  Widget _emailTextField() {
+    return TextInputWidget(
+        prefix: Icon(
+          Icons.email,
+          color: AppColors.darkGrayColor,
+        ),
+        labelText: '',
+        hintText: 'email'.tr(),
+        keyBoardType: TextInputType.emailAddress,
+        obscureText: false,
+        controller: null,
+        onSaved: (value) {
+          _email = value;
+        },
+        validationText: "please-enter-email".tr(),
+        textInputAction: null);
+  }
+
   Widget _userNameTextField() {
     return TextInputWidget(
         prefix: Icon(
@@ -91,7 +158,7 @@ class _RescuerRegisterationState extends State<RescuerRegisteration> {
         obscureText: false,
         controller: null,
         onSaved: (value) {
-          // this._userName = value;
+          _username = value;
         },
         validationText: "please-enter-username".tr(),
         textInputAction: null);
@@ -106,10 +173,11 @@ class _RescuerRegisterationState extends State<RescuerRegisteration> {
         labelText: '',
         hintText: 'password'.tr(),
         keyBoardType: TextInputType.text,
-        obscureText: false,
+        obscureText: true,
+        maxLines: 1,
         controller: null,
         onSaved: (value) {
-          // this._userName = value;
+          _password = value;
         },
         validationText: "please-enter-password".tr(),
         textInputAction: null);
@@ -124,10 +192,11 @@ class _RescuerRegisterationState extends State<RescuerRegisteration> {
         labelText: '',
         hintText: 'retype-password'.tr(),
         keyBoardType: TextInputType.text,
-        obscureText: false,
+        obscureText: true,
+        maxLines: 1,
         controller: null,
         onSaved: (value) {
-          // this._userName = value;
+          _retypePassword = value;
         },
         validationText: "please-enter-password".tr(),
         textInputAction: null);
@@ -145,13 +214,13 @@ class _RescuerRegisterationState extends State<RescuerRegisteration> {
         obscureText: false,
         controller: null,
         onSaved: (value) {
-          // this._userName = value;
+          _carModel = value;
         },
-        validationText: "please-enter-password".tr(),
+        validationText: "please-enter-car".tr(),
         textInputAction: null);
   }
 
-  Widget _phone() {
+  Widget _phoneTextField() {
     return TextInputWidget(
         prefix: Icon(
           Icons.phone,
@@ -159,17 +228,17 @@ class _RescuerRegisterationState extends State<RescuerRegisteration> {
         ),
         labelText: '',
         hintText: 'phone'.tr(),
-        keyBoardType: TextInputType.text,
+        keyBoardType: TextInputType.number,
         obscureText: false,
         controller: null,
         onSaved: (value) {
-          // this._userName = value;
+          _phone = value;
         },
-        validationText: "please-enter-password".tr(),
+        validationText: "please-enter-phone".tr(),
         textInputAction: null);
   }
 
-  Widget _city() {
+  Widget _cityTextField() {
     return TextInputWidget(
         prefix: Icon(
           Icons.pin_drop,
@@ -181,7 +250,7 @@ class _RescuerRegisterationState extends State<RescuerRegisteration> {
         obscureText: false,
         controller: null,
         onSaved: (value) {
-          // this._userName = value;
+          _city = value;
         },
         validationText: "please-enter-city".tr(),
         textInputAction: null);
@@ -199,7 +268,7 @@ class _RescuerRegisterationState extends State<RescuerRegisteration> {
         obscureText: false,
         controller: null,
         onSaved: (value) {
-          // this._userName = value;
+          _experience = value;
         },
         validationText: "please-rate-your-self".tr(),
         textInputAction: null);
@@ -217,7 +286,7 @@ class _RescuerRegisterationState extends State<RescuerRegisteration> {
         obscureText: false,
         controller: null,
         onSaved: (value) {
-          // this._userName = value;
+          _description = value;
         },
         validationText: "please-enter-your-self".tr(),
         textInputAction: null);
@@ -329,8 +398,49 @@ class _RescuerRegisterationState extends State<RescuerRegisteration> {
     );
   }
 
-  Widget _button() {
-    return CustomButton('submit-req'.tr(), () {});
+  Widget _submitButton(BuildContext context) {
+    return Provider.of<RescuerRegisterationController>(context)
+                .registerationStatus ==
+            RescuerRegisterationStatus.InProgress
+        ? CircularProgressIndicator()
+        : CustomButton('submit-req'.tr(), _registerButtonPressed);
+  }
+
+  void _registerButtonPressed() {
+    if (_formKey.currentState == null) {
+      return;
+    }
+    FormState currentState = _formKey.currentState!;
+    currentState.save();
+    if (!currentState.validate()) {
+      return;
+    }
+    if (_password != _retypePassword) {
+      Helper.showSnackbar("password-not-match-to-confirm".tr());
+      return;
+    }
+    if (_documentList.isEmpty) {
+      Helper.showSnackbar("please-upload-required-docs".tr());
+      return;
+    }
+    if (!_isTermsAndConditionsSelected) {
+      Helper.showSnackbar("please-accept-terms-and-condition".tr());
+      return;
+    }
+    _rescuerRegisterationModel = RescuerRegisterationModel(
+      username: _username,
+      email: _email,
+      password: _password,
+      resecername: _name,
+      carModel: _carModel,
+      city: _city,
+      confirmed: true,
+      blocked: false,
+      mobile: _phone,
+      role: "public",
+    );
+    RescuerRegisterationController().registerwithModelAndUploadAttachments(
+        _rescuerRegisterationModel, _documentList);
   }
 
   void _showPicker(context) {

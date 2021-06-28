@@ -33,4 +33,28 @@ class APIManager {
     }
     return result;
   }
+
+  postAttachment(String url, List<File> images, String userID) async {
+    Tuple2<APIResult, dynamic> result;
+    try {
+      FormData formData = FormData.fromMap({
+        "refId": userID,
+        "ref": "user",
+        "field": "Attachments",
+        "source": "users-permissions"
+      });
+      for (File image in images) {
+        String fileName = image.path.split('/').last;
+        formData.files.addAll([
+          MapEntry("files",
+              await MultipartFile.fromFile(image.path, filename: fileName))
+        ]);
+      }
+      await _dio.post(url, data: formData);
+      result = Tuple2<APIResult, dynamic>(APIResult.Success, null);
+    } on DioError catch (e) {
+      result = Tuple2<APIResult, dynamic>(APIResult.Failiure, e);
+    }
+    return result;
+  }
 }

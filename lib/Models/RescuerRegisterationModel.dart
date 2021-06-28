@@ -50,7 +50,6 @@ class RescuerRegisterationModel {
     data['CarModel'] = this.carModel;
     data['Mobile'] = this.mobile;
     data['City'] = this.city;
-    data['RescurePhoto'] = this.rescurePhoto;
     return data;
   }
 }

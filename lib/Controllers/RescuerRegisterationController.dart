@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:desert_falcon_rescue/APIManager/RescuerRegisterationAPIManager.dart';
+import 'package:desert_falcon_rescue/Globals/Endpoints.dart';
 import 'package:desert_falcon_rescue/Managers/UserSessionManager.dart';
 import 'package:desert_falcon_rescue/Models/AppErrors.dart';
 import 'package:desert_falcon_rescue/Models/AppUser.dart';
@@ -21,19 +23,18 @@ class RescuerRegisterationController extends ChangeNotifier {
   RescuerRegisterationController._internal();
   factory RescuerRegisterationController() => _selfInstance;
 
-  // Public Properties
-  RescuerRegisterationModel _rescuerRegisterationModel =
-      RescuerRegisterationModel();
-
   // Private Properties
   RescuerRegisterationStatus _rescuerRegisterationStatus =
       RescuerRegisterationStatus.Uninitialized;
 
   // Access Modifiers
-  RescuerRegisterationStatus get loginStatus => _rescuerRegisterationStatus;
+  RescuerRegisterationStatus get registerationStatus =>
+      _rescuerRegisterationStatus;
 
   // Public Methods
-  registerwithModel() async {
+  registerwithModelAndUploadAttachments(
+      RescuerRegisterationModel _rescuerRegisterationModel,
+      List<File> images) async {
     _rescuerRegisterationStatus = RescuerRegisterationStatus.InProgress;
     notifyListeners();
     Tuple2<APIResult, dynamic> response =
@@ -48,10 +49,18 @@ class RescuerRegisterationController extends ChangeNotifier {
     } else {
       AppUser user = AppUser.fromJson(response.item2);
       UserSessionManager().user = user;
+      if (user.user != null && user.user?.id != null) {
+        await uploadImages(images, user.user!.id.toString());
+      }
       Helper.showSnackbar(
-          "Succesfully REGISTERED IN"); //TODO This may get removed when we go to next screen in next phase/sprint
+          "Succesfully REGISTERED"); //TODO This may get removed when we go to next screen in next phase/sprint
       _rescuerRegisterationStatus = RescuerRegisterationStatus.Success;
     }
     notifyListeners();
+  }
+
+  uploadImages(List<File> images, String userID) async {
+    await APIManager()
+        .postAttachment(EndPoints.uploadAttachments, images, userID);
   }
 }

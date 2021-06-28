@@ -16,7 +16,9 @@
     "invalid-credentials": "Invalid Credentials",
     "rescuer-registration": "Rescuer Registration",
     "car-model-make": "Car Model and Make",
+    "please-enter-car": "Please enter details of your car",
     "phone": "Phone",
+    "please-enter-phone": "Please enter phone number",
     "city": "City",
     "please-enter-city": "Please enter city",
     "rate-your-self": "Rate your self  (Newbie, Middle level, Marshal)",
@@ -32,5 +34,12 @@
     "submit-req": "Submit Request",
     "send-req": "Send Request",
     "select-your-location": "Select your location",
-    "confirm-location": "Confirm Location"
+    "confirm-location": "Confirm Location",
+    "please-accept-terms-and-condition": "Please accept terms and conditions to continue",
+    "password-not-match-to-confirm": "Password doesn't matches the retyped password",
+    "name": "Name",
+    "please-enter-name": "Please enter name",
+    "email": "Email",
+    "please-enter-email": "Please enter email",
+    "please-upload-required-docs": "Please upload required documents"
 }
