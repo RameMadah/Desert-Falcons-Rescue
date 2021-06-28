@@ -3,6 +3,7 @@ import 'package:desert_falcon_rescue/Globals/Colors.dart';
 import 'package:desert_falcon_rescue/Views/Screens/ApplicationScreen.dart';
 import 'package:desert_falcon_rescue/Views/Screens/RescuerRegisterationPage.dart';
 import 'package:desert_falcon_rescue/Views/Utils/AppRoutes.dart';
+import 'package:desert_falcon_rescue/Views/Utils/HelperFunctions.dart';
 import 'package:desert_falcon_rescue/Views/Widgets/AppBar.dart';
 import 'package:desert_falcon_rescue/Views/Widgets/Button.dart';
 import 'package:desert_falcon_rescue/Views/Widgets/CircularProgressIndicatorWidget.dart';
@@ -118,6 +119,7 @@ class _LoginPageState extends State<LoginPage> {
             LoginStatus.InProgress
         ? CircularProgressIndicatorWidget()
         : CustomButton('login'.tr(), () {
+            Helper.closeKeyboard(context);
             if (_formKey.currentState == null) {
               return;
             }

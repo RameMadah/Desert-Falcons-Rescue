@@ -340,6 +340,7 @@ class _ApplicationScreenState extends State<ApplicationScreen> {
   }
 
   void _submitButtonPressed() {
+    Helper.closeKeyboard(context);
     if (_formKey.currentState == null) return;
     FormState currentState = _formKey.currentState!;
     if (!currentState.validate()) return;

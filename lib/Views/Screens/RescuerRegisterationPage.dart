@@ -407,6 +407,7 @@ class _RescuerRegisterationState extends State<RescuerRegisteration> {
   }
 
   void _registerButtonPressed() {
+    Helper.closeKeyboard(context);
     if (_formKey.currentState == null) return;
     FormState currentState = _formKey.currentState!;
     if (!currentState.validate()) return;
