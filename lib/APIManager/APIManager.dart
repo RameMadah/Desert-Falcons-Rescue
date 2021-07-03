@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -51,7 +52,7 @@ class APIManager {
               await MultipartFile.fromFile(image.path, filename: fileName))
         ]);
       }
-      await _dio.post(url, data: formData);
+      var response = await _dio.post(url, data: formData);
       result = Tuple2<APIResult, dynamic>(APIResult.Success, null);
     } on DioError catch (e) {
       result = Tuple2<APIResult, dynamic>(APIResult.Failiure, e);

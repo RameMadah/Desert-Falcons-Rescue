@@ -56,11 +56,17 @@ class _ApplicationScreenState extends State<ApplicationScreen> {
           value: ApplicationController(),
           child: Consumer<ApplicationController>(
               builder: (context, controller, child) {
-            switch (controller.registerationStatus) {
+            switch (controller.helpApplicationStatus) {
               case HelpApplicationStatus.Uninitialized:
               case HelpApplicationStatus.InProgress:
-              case HelpApplicationStatus.Success:
               case HelpApplicationStatus.Error:
+                return _form(context);
+              case HelpApplicationStatus.Success:
+                Future(() {
+                  controller.helpApplicationStatus =
+                      HelpApplicationStatus.Uninitialized;
+                  AppRoutes.pop(context);
+                });
                 return _form(context);
             }
           }),
@@ -333,7 +339,7 @@ class _ApplicationScreenState extends State<ApplicationScreen> {
   }
 
   Widget _submitButton(BuildContext context) {
-    return Provider.of<ApplicationController>(context).registerationStatus ==
+    return Provider.of<ApplicationController>(context).helpApplicationStatus ==
             HelpApplicationStatus.InProgress
         ? CircularProgressIndicator()
         : CustomButton('submit-req'.tr(), _submitButtonPressed);

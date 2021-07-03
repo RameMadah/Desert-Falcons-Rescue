@@ -30,7 +30,10 @@ class ApplicationController extends ChangeNotifier {
       HelpApplicationStatus.Uninitialized;
 
   // Access Modifiers
-  HelpApplicationStatus get registerationStatus => _helpApplicationStatus;
+  HelpApplicationStatus get helpApplicationStatus => _helpApplicationStatus;
+  set helpApplicationStatus(HelpApplicationStatus helpApplicationStatus) {
+    _helpApplicationStatus = helpApplicationStatus;
+  }
 
   // Public Methods
   helpRequestWithModelAndUploadImages(
