@@ -1,14 +1,15 @@
-import 'dart:collection';
-import 'dart:developer';
 import 'dart:io';
 import 'package:desert_falcon_rescue/Controllers/ApplicationController.dart';
 import 'package:desert_falcon_rescue/Globals/Colors.dart';
+import 'package:desert_falcon_rescue/Models/AreaModel.dart';
 import 'package:desert_falcon_rescue/Models/HelpRequestModel.dart';
 import 'package:desert_falcon_rescue/Views/Screens/MapScreen.dart';
+import 'package:desert_falcon_rescue/Views/Screens/RescuerDashboard.dart';
 import 'package:desert_falcon_rescue/Views/Utils/AppRoutes.dart';
 import 'package:desert_falcon_rescue/Views/Utils/HelperFunctions.dart';
 import 'package:desert_falcon_rescue/Views/Widgets/AppBar.dart';
 import 'package:desert_falcon_rescue/Views/Widgets/Button.dart';
+import 'package:desert_falcon_rescue/Views/Widgets/CircularProgressIndicatorWidget.dart';
 import 'package:desert_falcon_rescue/Views/Widgets/TextInputWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -40,9 +41,11 @@ class _ApplicationScreenState extends State<ApplicationScreen> {
   late String _vehicleMaker;
   late String _description;
   late HelpRequestModel _helpRequestModel;
+  AreaModel? _selectedArea;
   @override
   void initState() {
     _isLocationSelected = false;
+    ApplicationController().fetchAreas();
     super.initState();
   }
 
@@ -65,7 +68,7 @@ class _ApplicationScreenState extends State<ApplicationScreen> {
                 Future(() {
                   controller.helpApplicationStatus =
                       HelpApplicationStatus.Uninitialized;
-                  AppRoutes.pop(context);
+                  AppRoutes.push(context, RescuerDashboard(_phone));
                 });
                 return _form(context);
             }
@@ -78,13 +81,13 @@ class _ApplicationScreenState extends State<ApplicationScreen> {
       key: _formKey,
       child: SingleChildScrollView(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _map(),
             _areaTextField(),
             _nameTextField(),
             _phoneTextField(),
-            _vehicleMakerTextField(),
-            _descriptionTextField(),
+            _areasDropDown(),
             _imageUploadOptions(),
             _documentImages(),
             _submitButton(context),
@@ -215,67 +218,60 @@ class _ApplicationScreenState extends State<ApplicationScreen> {
         textInputAction: null);
   }
 
-  Widget _vehicleMakerTextField() {
-    return TextInputWidget(
-        prefix: Icon(
-          Icons.car_rental,
-          color: AppColors.darkGrayColor,
-        ),
-        labelText: '',
-        hintText: 'vehicle-maker'.tr(),
-        keyBoardType: TextInputType.text,
-        obscureText: false,
-        controller: null,
-        onSaved: (value) {
-          _vehicleMaker = value;
-        },
-        validationText: "please-enter-vehicle-maker".tr(),
-        textInputAction: null);
-  }
-
-  Widget _descriptionTextField() {
-    return TextInputWidget(
-        prefix: Icon(
-          Icons.edit,
-          color: AppColors.darkGrayColor,
-        ),
-        labelText: '',
-        hintText: 'description-explain-your-situation'.tr(),
-        keyBoardType: TextInputType.multiline,
-        obscureText: false,
-        maxLines: 5,
-        controller: null,
-        onSaved: (value) {
-          _description = value;
-        },
-        validationText: "please-explain-situation".tr(),
-        textInputAction: TextInputAction.newline);
+  Widget _areasDropDown() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16.0, 8, 16, 0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'select-area'.tr(),
+            style: TextStyle(fontSize: 48.sp, fontWeight: FontWeight.w500),
+          ),
+          ValueListenableBuilder(
+              valueListenable: ApplicationController().areasFetched,
+              builder: (context, value, child) {
+                if (value == false) {
+                  return Center(child: CircularProgressIndicatorWidget());
+                }
+                _selectedArea ??= ApplicationController().areas[0];
+                return DropdownButtonFormField<AreaModel>(
+                  value: _selectedArea,
+                  onChanged: (AreaModel? area) {
+                    setState(() {
+                      _selectedArea = area!;
+                    });
+                  },
+                  items: ApplicationController()
+                      .areas
+                      .map<DropdownMenuItem<AreaModel>>((AreaModel model) {
+                    return DropdownMenuItem(
+                      value: model,
+                      child: Text(model.areaNameEn ?? ""),
+                    );
+                  }).toList(),
+                  isExpanded: true,
+                  decoration: InputDecoration(
+                    border: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey)),
+                    enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey)),
+                    focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey)),
+                  ),
+                );
+              }),
+        ],
+      ),
+    );
   }
 
   Widget _imageUploadOptions() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16.0, 16, 16, 0),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          InkWell(
-            onTap: () {
-              _imgFromGallery();
-            },
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Image.asset("assets/images/document_upload_logo.png",
-                    height: _screenHeight * 0.05, width: _screenHeight * 0.05),
-                Padding(padding: const EdgeInsets.all(8)),
-                Text('Upload-clear-photos-or-Videos-of-vehicle'.tr(),
-                    textAlign: TextAlign.center,
-                    maxLines: 2,
-                    style: TextStyle(
-                        fontSize: 45.sp, color: AppColors.textBlackColor))
-              ],
-            ),
-          ),
           InkWell(
             onTap: () {
               _imgFromCamera();
@@ -341,7 +337,7 @@ class _ApplicationScreenState extends State<ApplicationScreen> {
   Widget _submitButton(BuildContext context) {
     return Provider.of<ApplicationController>(context).helpApplicationStatus ==
             HelpApplicationStatus.InProgress
-        ? CircularProgressIndicator()
+        ? Center(child: CircularProgressIndicator())
         : CustomButton('submit-req'.tr(), _submitButtonPressed);
   }
 
@@ -355,14 +351,17 @@ class _ApplicationScreenState extends State<ApplicationScreen> {
       Helper.showSnackbar("please-upload-images".tr());
       return;
     }
+    if (_selectedArea == null) {
+      Helper.showSnackbar("Please Select Area");
+      return;
+    }
     _helpRequestModel = HelpRequestModel(
         _areaName,
         _name,
         _phone,
-        _vehicleMaker,
-        _description,
         _cameraPosition.longitude.toString(),
-        _cameraPosition.latitude.toString());
+        _cameraPosition.latitude.toString(),
+        _selectedArea!.id!);
     ApplicationController()
         .helpRequestWithModelAndUploadImages(_helpRequestModel, _imagesList);
   }

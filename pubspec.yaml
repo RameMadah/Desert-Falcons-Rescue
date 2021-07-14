@@ -39,6 +39,11 @@ dependencies:
   dotted_border: ^2.0.0
   google_maps_flutter: ^2.0.6
   location: ^4.3.0
+  shared_preferences: ^2.0.6
+  firebase_messaging: ^10.0.3
+  platform_device_id: ^1.0.1
+  firebase_core: ^1.3.0
+  maps_launcher: ^2.0.0
 
 dev_dependencies:
   flutter_test:

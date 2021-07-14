@@ -1,16 +1,19 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:desert_falcon_rescue/APIManager/LoginAPIManager.dart';
+import 'package:desert_falcon_rescue/APIManager/SaveTokenAPIManager.dart';
+import 'package:desert_falcon_rescue/Managers/UserDefaultManager.dart';
 import 'package:desert_falcon_rescue/Managers/UserSessionManager.dart';
 import 'package:desert_falcon_rescue/Models/AppErrors.dart';
 import 'package:desert_falcon_rescue/Models/AppUser.dart';
 import 'package:desert_falcon_rescue/Views/Utils/HelperFunctions.dart';
 import 'package:dio/dio.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tuple/tuple.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:platform_device_id/platform_device_id.dart';
 
 enum LoginStatus { Uninitialized, InProgress, Success, Error }
 
@@ -43,11 +46,32 @@ class LoginController extends ChangeNotifier {
       _loginStatus = LoginStatus.Error;
     } else {
       AppUser user = AppUser.fromJson(response.item2);
+      bool tokenSaved = await saveToken(user.user!.id.toString());
+      if (!tokenSaved) {
+        _loginStatus = LoginStatus.Error;
+        Helper.showSnackbar('some-error-occured'.tr());
+        notifyListeners();
+        return;
+      }
       UserSessionManager().user = user;
-      Helper.showSnackbar(
-          "Succesfully Logged IN"); //TODO This may get removed when we go to next screen in next phase/sprint
+      UserDefaultManager().saveUser(user);
       _loginStatus = LoginStatus.Success;
     }
     notifyListeners();
+  }
+
+  Future<bool> saveToken(String userID) async {
+    FirebaseMessaging firebaseInstane = FirebaseMessaging.instance;
+    String? token = await firebaseInstane.getToken();
+    String? deviceID = await PlatformDeviceId.getDeviceId;
+    String device = Helper.platform();
+    if (token == null || deviceID == null) return false;
+    Tuple2<APIResult, dynamic> response =
+        await APIManager().saveToken(userID, token, deviceID, device);
+    if (response.item1 == APIResult.Failiure) {
+      return false;
+    } else {
+      return true;
+    }
   }
 }

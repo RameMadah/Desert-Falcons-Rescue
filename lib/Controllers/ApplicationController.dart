@@ -3,11 +3,10 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:desert_falcon_rescue/APIManager/HelpApplicationAPIManager.dart';
-import 'package:desert_falcon_rescue/APIManager/RescuerRegisterationAPIManager.dart';
+import 'package:desert_falcon_rescue/APIManager/AreasAPIManager.dart';
 import 'package:desert_falcon_rescue/Globals/Endpoints.dart';
-import 'package:desert_falcon_rescue/Managers/UserSessionManager.dart';
 import 'package:desert_falcon_rescue/Models/AppErrors.dart';
-import 'package:desert_falcon_rescue/Models/AppUser.dart';
+import 'package:desert_falcon_rescue/Models/AreaModel.dart';
 import 'package:desert_falcon_rescue/Models/HelpRequestModel.dart';
 import 'package:desert_falcon_rescue/Views/Utils/HelperFunctions.dart';
 import 'package:dio/dio.dart';
@@ -28,6 +27,10 @@ class ApplicationController extends ChangeNotifier {
   // Private Properties
   HelpApplicationStatus _helpApplicationStatus =
       HelpApplicationStatus.Uninitialized;
+
+  List<AreaModel> areas = [];
+
+  ValueNotifier<bool> areasFetched = ValueNotifier(false);
 
   // Access Modifiers
   HelpApplicationStatus get helpApplicationStatus => _helpApplicationStatus;
@@ -60,5 +63,26 @@ class ApplicationController extends ChangeNotifier {
     await APIManager().postAttachment(
         EndPoints.uploadAttachments, images, userID,
         field: "IncidentAttachment");
+  }
+
+  fetchAreas() async {
+    areasFetched.value = false;
+    areas.clear();
+    areasFetched.notifyListeners();
+    Tuple2<APIResult, dynamic> response = await APIManager().fetchAreas();
+    if (response.item1 == APIResult.Failiure) {
+      DioError error = response.item2 as DioError;
+      AppError appError =
+          AppError.fromJson(jsonDecode(error.response.toString()));
+      Helper.showSnackbar(appError.message?[0].messages?[0].message ??
+          'some-error-occured'.tr());
+    } else {
+      for (var item in response.item2) {
+        AreaModel model = AreaModel.fromJson(item);
+        areas.add(model);
+      }
+      areasFetched.value = true;
+      areasFetched.notifyListeners();
+    }
   }
 }

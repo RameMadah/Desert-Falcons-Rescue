@@ -3,13 +3,17 @@ import 'dart:io';
 
 import 'package:desert_falcon_rescue/APIManager/RescuerRegisterationAPIManager.dart';
 import 'package:desert_falcon_rescue/Globals/Endpoints.dart';
+import 'package:desert_falcon_rescue/Managers/UserDefaultManager.dart';
 import 'package:desert_falcon_rescue/Managers/UserSessionManager.dart';
 import 'package:desert_falcon_rescue/Models/AppErrors.dart';
 import 'package:desert_falcon_rescue/Models/AppUser.dart';
 import 'package:desert_falcon_rescue/Models/RescuerRegisterationModel.dart';
 import 'package:desert_falcon_rescue/Views/Utils/HelperFunctions.dart';
+import 'package:desert_falcon_rescue/APIManager/SaveTokenAPIManager.dart';
 import 'package:dio/dio.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:platform_device_id/platform_device_id.dart';
 import 'package:tuple/tuple.dart';
 import 'package:easy_localization/easy_localization.dart';
 
@@ -48,7 +52,15 @@ class RescuerRegisterationController extends ChangeNotifier {
       _rescuerRegisterationStatus = RescuerRegisterationStatus.Error;
     } else {
       AppUser user = AppUser.fromJson(response.item2);
+      bool tokenSaved = await saveToken(user.user!.id.toString());
+      if (!tokenSaved) {
+        _rescuerRegisterationStatus = RescuerRegisterationStatus.Error;
+        Helper.showSnackbar('some-error-occured'.tr());
+        notifyListeners();
+        return;
+      }
       UserSessionManager().user = user;
+      UserDefaultManager().saveUser(user);
       if (user.user != null && user.user?.id != null) {
         await uploadImages(images, user.user!.id.toString());
       }
@@ -62,5 +74,20 @@ class RescuerRegisterationController extends ChangeNotifier {
   uploadImages(List<File> images, String userID) async {
     await APIManager()
         .postAttachment(EndPoints.uploadAttachments, images, userID);
+  }
+
+  Future<bool> saveToken(String userID) async {
+    FirebaseMessaging firebaseInstane = FirebaseMessaging.instance;
+    String? token = await firebaseInstane.getToken();
+    String? deviceID = await PlatformDeviceId.getDeviceId;
+    String device = Helper.platform();
+    if (token == null || deviceID == null) return false;
+    Tuple2<APIResult, dynamic> response =
+        await APIManager().saveToken(userID, token, deviceID, device);
+    if (response.item1 == APIResult.Failiure) {
+      return false;
+    } else {
+      return true;
+    }
   }
 }

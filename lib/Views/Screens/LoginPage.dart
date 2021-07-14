@@ -1,6 +1,6 @@
 import 'package:desert_falcon_rescue/Controllers/LoginController.dart';
 import 'package:desert_falcon_rescue/Globals/Colors.dart';
-import 'package:desert_falcon_rescue/Views/Screens/ApplicationScreen.dart';
+import 'package:desert_falcon_rescue/Views/Screens/RescuerDashboard.dart';
 import 'package:desert_falcon_rescue/Views/Screens/RescuerRegisterationPage.dart';
 import 'package:desert_falcon_rescue/Views/Utils/AppRoutes.dart';
 import 'package:desert_falcon_rescue/Views/Utils/HelperFunctions.dart';
@@ -36,8 +36,12 @@ class _LoginPageState extends State<LoginPage> {
           switch (_loginController.loginStatus) {
             case LoginStatus.Uninitialized:
             case LoginStatus.InProgress:
-            case LoginStatus.Success:
             case LoginStatus.Error:
+              return _body(context);
+            case LoginStatus.Success:
+              Future(() {
+                AppRoutes.makeFirst(context, RescuerDashboard(null));
+              });
               return _body(context);
           }
         }),
