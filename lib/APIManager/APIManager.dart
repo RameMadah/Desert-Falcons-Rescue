@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -27,6 +28,70 @@ class APIManager {
             HttpHeaders.contentTypeHeader: "application/json",
           }),
           data: jsonEncode(data));
+      result = Tuple2<APIResult, dynamic>(APIResult.Success, response.data);
+    } on DioError catch (e) {
+      result = Tuple2<APIResult, dynamic>(APIResult.Failiure, e);
+    }
+    return result;
+  }
+
+  postAttachment(String url, List<File> images, String userID,
+      {String field = "Attachments"}) async {
+    Tuple2<APIResult, dynamic> result;
+    try {
+      FormData formData = FormData.fromMap({
+        "refId": userID,
+        "ref": "user",
+        "field": field,
+        "source": "users-permissions"
+      });
+      for (File image in images) {
+        String fileName = image.path.split('/').last;
+        fileName = fileName.substring(fileName.length - 8);
+        formData.files.addAll([
+          MapEntry("files",
+              await MultipartFile.fromFile(image.path, filename: fileName))
+        ]);
+      }
+      var response = await _dio.post(url, data: formData);
+      result = Tuple2<APIResult, dynamic>(APIResult.Success, null);
+    } on DioError catch (e) {
+      result = Tuple2<APIResult, dynamic>(APIResult.Failiure, e);
+    }
+    return result;
+  }
+
+  Future<Tuple2<APIResult, dynamic>> getRequest(String url) async {
+    Tuple2<APIResult, dynamic> result;
+    try {
+      Response response = await _dio.request(url);
+      result = Tuple2<APIResult, dynamic>(APIResult.Success, response.data);
+    } on DioError catch (e) {
+      result = Tuple2<APIResult, dynamic>(APIResult.Failiure, e);
+    }
+    return result;
+  }
+
+  Future<Tuple2<APIResult, dynamic>> putRequest(
+      String url, Map<String, dynamic> data) async {
+    Tuple2<APIResult, dynamic> result;
+    try {
+      Response response = await Dio().put(url,
+          options: Options(headers: {
+            HttpHeaders.contentTypeHeader: "application/json",
+          }),
+          data: jsonEncode(data));
+      result = Tuple2<APIResult, dynamic>(APIResult.Success, response.data);
+    } on DioError catch (e) {
+      result = Tuple2<APIResult, dynamic>(APIResult.Failiure, e);
+    }
+    return result;
+  }
+
+  Future<Tuple2<APIResult, dynamic>> deleteRequest(String url) async {
+    Tuple2<APIResult, dynamic> result;
+    try {
+      Response response = await _dio.delete(url);
       result = Tuple2<APIResult, dynamic>(APIResult.Success, response.data);
     } on DioError catch (e) {
       result = Tuple2<APIResult, dynamic>(APIResult.Failiure, e);

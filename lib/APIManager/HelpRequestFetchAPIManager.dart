@@ -3,16 +3,11 @@ import 'package:desert_falcon_rescue/APIManager/APIManager.dart';
 import 'package:desert_falcon_rescue/Globals/Endpoints.dart';
 import 'package:tuple/tuple.dart';
 
-extension LoginAPIManager on APIManager {
-  
-  Future<Tuple2<APIResult, dynamic>> login(
-      String username, String password) async {
-    Map<String, dynamic> loginData = {
-      "identifier": username,
-      "password": password
-    };
+extension HelpRequestFetch on APIManager {
+  Future<Tuple2<APIResult, dynamic>> fetchHelpRequest(
+      String? phoneNumber) async {
     Tuple2<APIResult, dynamic> response =
-        await post(EndPoints.login, loginData);
+        await getRequest(EndPoints.helpRequests(phoneNumber));
     return response;
   }
 }

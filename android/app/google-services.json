@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1095308283112",
+    "project_id": "desert-falcons",
+    "storage_bucket": "desert-falcons.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1095308283112:android:f749b2d70eaf486ee20d5d",
+        "android_client_info": {
+          "package_name": "com.developer.desert_falcon_rescue"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1095308283112-01kk60bjcvjukomvqutlo3v5t21bde4u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA5MSCKoVnTmRAMKOvaMJ-MlFzFlzKSQbY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1095308283112-01kk60bjcvjukomvqutlo3v5t21bde4u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

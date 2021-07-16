@@ -1,10 +1,13 @@
 import 'package:desert_falcon_rescue/Globals/Colors.dart';
 import 'package:desert_falcon_rescue/Views/Screens/LoginPage.dart';
 import 'package:desert_falcon_rescue/Views/Utils/AppRoutes.dart';
+import 'package:desert_falcon_rescue/Views/Widgets/CardButton.dart';
 import 'package:desert_falcon_rescue/Views/Widgets/Logo.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import 'ApplicationScreen.dart';
 
 class StartPage extends StatelessWidget {
   late double screenHeight;
@@ -23,6 +26,7 @@ class StartPage extends StatelessWidget {
 
   Widget _body(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Logo(),
         Center(
@@ -44,8 +48,7 @@ class StartPage extends StatelessWidget {
                 fontSize: 50.sp),
           ).tr(),
         ),
-        _redButton(),
-        _rescuersOnlineWidget(),
+        _redButton(context),
         Container(
           width: double.infinity,
           color: AppColors.borderColor,
@@ -53,7 +56,7 @@ class StartPage extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              _cardButton(
+              cardButton(
                   "assets/images/redButtonBGImage.png",
                   "assets/images/carlogo.png",
                   AppColors.whiteColor,
@@ -61,15 +64,17 @@ class StartPage extends StatelessWidget {
                           style: TextStyle(
                               fontSize: 45.sp, color: AppColors.textBlackColor))
                       .tr(),
+                  screenHeight,
                   () {}),
-              _cardButton(
+              cardButton(
                   "assets/images/greenBGImage.png",
                   "assets/images/rescuerLogo.png",
                   AppColors.greenColor01,
                   Text('login-as-rescuer',
                           style: TextStyle(
                               fontSize: 45.sp, color: AppColors.whiteColor))
-                      .tr(), () {
+                      .tr(),
+                  screenHeight, () {
                 AppRoutes.push(context, LoginPage());
               }),
             ],
@@ -79,35 +84,40 @@ class StartPage extends StatelessWidget {
     );
   }
 
-  _redButton() {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                    color: Colors.grey.withOpacity(0.9),
-                    spreadRadius: 5,
-                    blurRadius: 7,
-                    offset: Offset(0, 3))
-              ],
+  _redButton(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        AppRoutes.push(context, ApplicationScreen());
+      },
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.grey.withOpacity(0.9),
+                      spreadRadius: 5,
+                      blurRadius: 7,
+                      offset: Offset(0, 3))
+                ],
+              ),
+              child: Image.asset("assets/images/redButtonImage.png",
+                  height: screenHeight * 0.22, width: screenHeight * 0.22),
             ),
-            child: Image.asset("assets/images/redButtonImage.png",
-                height: screenHeight * 0.22, width: screenHeight * 0.22),
           ),
-        ),
-        Text(
-          'help',
-          style: TextStyle(
-              fontSize: 111.sp,
-              color: AppColors.whiteColor,
-              fontWeight: FontWeight.bold),
-        ).tr(),
-      ],
+          Text(
+            'help',
+            style: TextStyle(
+                fontSize: 111.sp,
+                color: AppColors.whiteColor,
+                fontWeight: FontWeight.bold),
+          ).tr(),
+        ],
+      ),
     );
   }
 
@@ -141,50 +151,6 @@ class StartPage extends StatelessWidget {
                           color: AppColors.whiteColor))),
             )
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _cardButton(String bgImage, String logoImage, Color bgColor, Text text,
-      Function() onPress) {
-    return InkWell(
-      onTap: () {
-        onPress();
-      },
-      child: Card(
-        color: bgColor,
-        elevation: 4,
-        child: Padding(
-          padding:
-              const EdgeInsets.only(left: 16, right: 16, top: 4, bottom: 4),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(right: 8),
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Align(
-                      alignment: Alignment.center,
-                      child: Image.asset(bgImage,
-                          height: screenHeight * 0.08,
-                          width: screenHeight * 0.08),
-                    ),
-                    Align(
-                      alignment: Alignment.center,
-                      child: Image.asset(logoImage,
-                          height: screenHeight * 0.06,
-                          width: screenHeight * 0.06),
-                    ),
-                  ],
-                ),
-              ),
-              text
-            ],
-          ),
         ),
       ),
     );

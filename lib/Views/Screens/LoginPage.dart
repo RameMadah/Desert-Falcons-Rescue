@@ -1,8 +1,11 @@
-import 'dart:developer';
-
 import 'package:desert_falcon_rescue/Controllers/LoginController.dart';
 import 'package:desert_falcon_rescue/Globals/Colors.dart';
+import 'package:desert_falcon_rescue/Views/Screens/RescuerDashboard.dart';
+import 'package:desert_falcon_rescue/Views/Screens/RescuerRegisterationPage.dart';
 import 'package:desert_falcon_rescue/Views/Utils/AppRoutes.dart';
+import 'package:desert_falcon_rescue/Views/Utils/HelperFunctions.dart';
+import 'package:desert_falcon_rescue/Views/Widgets/AppBar.dart';
+import 'package:desert_falcon_rescue/Views/Widgets/Button.dart';
 import 'package:desert_falcon_rescue/Views/Widgets/CircularProgressIndicatorWidget.dart';
 import 'package:desert_falcon_rescue/Views/Widgets/Logo.dart';
 import 'package:desert_falcon_rescue/Views/Widgets/TextInputWidget.dart';
@@ -24,21 +27,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.navigate_before,
-              color: AppColors.darkGrayColor, size: 40),
-          onPressed: () {
-            AppRoutes.pop(context);
-          },
-        ),
-        title: Text(
-          'login',
-          style: TextStyle(color: AppColors.darkGrayColor, fontSize: 60.sp),
-        ).tr(),
-        centerTitle: true,
-        backgroundColor: AppColors.grayColor,
-      ),
+      appBar: CustomAppBar(context, "login".tr()),
       body: SafeArea(
           child: ChangeNotifierProvider.value(
         value: LoginController(),
@@ -47,8 +36,12 @@ class _LoginPageState extends State<LoginPage> {
           switch (_loginController.loginStatus) {
             case LoginStatus.Uninitialized:
             case LoginStatus.InProgress:
-            case LoginStatus.Success:
             case LoginStatus.Error:
+              return _body(context);
+            case LoginStatus.Success:
+              Future(() {
+                AppRoutes.makeFirst(context, RescuerDashboard(null));
+              });
               return _body(context);
           }
         }),
@@ -66,16 +59,21 @@ class _LoginPageState extends State<LoginPage> {
           _userNameTextField(),
           _passwordTextField(),
           _loginButton(context),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Center(
-              child: Text(
-                'Apply-for-registration-as-Rescuer',
-                style: TextStyle(
-                    fontSize: 50.sp,
-                    color: AppColors.darkGrayColor,
-                    decoration: TextDecoration.underline),
-              ).tr(),
+          InkWell(
+            onTap: () {
+              AppRoutes.push(context, RescuerRegisteration());
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(
+                child: Text(
+                  'Apply-for-registration-as-Rescuer',
+                  style: TextStyle(
+                      fontSize: 50.sp,
+                      color: AppColors.darkGrayColor,
+                      decoration: TextDecoration.underline),
+                ).tr(),
+              ),
             ),
           ),
         ],
@@ -124,33 +122,17 @@ class _LoginPageState extends State<LoginPage> {
     return Provider.of<LoginController>(context).loginStatus ==
             LoginStatus.InProgress
         ? CircularProgressIndicatorWidget()
-        : InkWell(
-            onTap: () {
-              if (_formKey.currentState == null) {
-                return;
-              }
-              FormState currentState = _formKey.currentState!;
-              if (currentState.validate()) {
-                currentState.save();
-                _login();
-              }
-            },
-            child: Container(
-              padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
-              margin: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: AppColors.greenColor),
-              child: Center(
-                  child: Text(
-                'login',
-                style: TextStyle(
-                    fontSize: 45.sp,
-                    color: AppColors.whiteColor,
-                    fontWeight: FontWeight.bold),
-              ).tr()),
-            ),
-          );
+        : CustomButton('login'.tr(), () {
+            Helper.closeKeyboard(context);
+            if (_formKey.currentState == null) {
+              return;
+            }
+            FormState currentState = _formKey.currentState!;
+            if (currentState.validate()) {
+              currentState.save();
+              _login();
+            }
+          });
   }
 
   _login() {
